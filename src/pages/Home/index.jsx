@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from '../../components/Layout'
 import SectionTitle from '../../components/SectionTitle'
 import Card from '../../components/Card'
@@ -8,24 +8,27 @@ import EventList from '../../components/EventList'
 const Home = () => {
   const [events, setEvents] = useState([])
   const [isLoadingEvents, setIsLoadingEvents] = useState(true)
+  console.log('rendered')
 
   // TODO: Change to axios
   const API_URL = process.env.NODE_ENV !== 'development' ?
     import.meta.env.VITE_API_PRODUCTION_URL :
     import.meta.env.VITE_API_LOCAL_URL
 
-  fetch(`${API_URL}/event/`)
-    .then(res => res.json())
-    .then(data => {
-      setEvents(data.result)
-    })
-    .catch(err => {
-      // TODO: Create feedback for errors
-      console.log(err)
-    })
-    .finally(() => {
-      setIsLoadingEvents(false)
-    })
+  useEffect(() => {
+    fetch(`${API_URL}/event/`)
+      .then(res => res.json())
+      .then(data => {
+        setEvents(data.result)
+      })
+      .catch(err => {
+        // TODO: Create feedback for errors
+        console.log(err)
+      })
+      .finally(() => {
+        setIsLoadingEvents(false)
+      })
+  }, [])
 
   return (
     <Layout>
