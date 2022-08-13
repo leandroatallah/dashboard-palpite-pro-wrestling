@@ -36,7 +36,7 @@ const Header = () => {
             <ul className="list-none m-0 p-0 flex gap-6 lg:gap-12">
               {menuItems.map(({ label, href }) => (
                 <li className="text-lg font-semibold" key={label}>
-                  <Link to={href} className={`text-zinc-400 ${location.pathname === href && 'text-white'} hover:text-white`}>{label}
+                  <Link to={href} className={`text-zinc-400 ${location?.pathname === href && 'text-white'} hover:text-white`}>{label}
                   </Link>
                 </li>
               ))}

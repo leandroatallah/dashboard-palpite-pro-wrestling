@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 
-const EventItem = ({ thumb, title, date, description, link, className, ...rest }) => {
+const EventItem = ({ thumb, title, date, description, link = '#', className, ...rest }) => {
   return (
     <div className={`flex rounded-2xl overflow-hidden bg-cardDark ${className}`}>
       <Link to={link} className={`min-w-[160px] w-4/12 bg-cover bg-center`} style={{ backgroundImage: `url(${thumb})` }} />
@@ -19,8 +19,15 @@ const EventItem = ({ thumb, title, date, description, link, className, ...rest }
   )
 }
 
-const EventList = ({ items, direction }) => {
+const EventList = ({ items, direction, isLoading }) => {
   const isColumn = direction === 'column'
+
+  // TODO: Create feedback for loading
+  if (isLoading) {
+    return (
+      <div>Carregando</div>
+    )
+  }
 
   return (
     <div className={`gap-6 ${isColumn ? 'flex flex-col' : 'grid grid-cols-2 xl:grid-cols-3'}`}>
