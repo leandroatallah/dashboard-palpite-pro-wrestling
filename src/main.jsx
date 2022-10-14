@@ -13,6 +13,8 @@ import Events from './pages/Events'
 import EventDetail from './pages/Events/Detail'
 import Ranking from './pages/Ranking'
 import Account from './pages/Account'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -25,6 +27,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/eventos" element={<Events />} />
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/conta" element={<Account />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
