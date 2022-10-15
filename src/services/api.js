@@ -9,11 +9,16 @@ axios.defaults.baseURL = API_URL;
 axios.defaults.timeout = 99999;
 axios.defaults.headers = {
   accept: 'application/json',
-  'Content-Type': 'application/x-www-form-urlencoded',
+  'Content-Type': 'application/json',
 };
 
 axios.interceptors.request.use(
   async (config) => {
+    if (config.url === '/user/login') {
+      config.headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
+    }
     const token = localStorage.getItem('token');
 
     if (token) {

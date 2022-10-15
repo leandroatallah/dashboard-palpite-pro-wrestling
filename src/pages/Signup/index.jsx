@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react'
-import { Link, redirect } from "react-router-dom"
+import { Link, Navigate, redirect } from "react-router-dom"
 import { LoginContext } from '../../context/authContext'
 import { Button, Input } from '../../components/Form'
 import LayoutSignin from '../../components/LayoutSignin'
@@ -11,6 +11,7 @@ const Signup = () => {
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showError, setShowError] = useState(false)
+  const [redirectToLogin, setRedirectToLogin] = useState(false)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -29,8 +30,12 @@ const Signup = () => {
     setIsSubmitting(false)
 
     if (login) {
-      return redirect('/login')
+      setRedirectToLogin(true)
     }
+  }
+
+  if (redirectToLogin) {
+    return <Navigate to="login" />
   }
 
   return (
@@ -58,7 +63,7 @@ const Signup = () => {
           isError={showError && !isPasswordValid(password)}
           errorText="A senha deve ter pelo menos 6 caracteres"
         />
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" loading={isSubmitting}>
           Cadastrar
         </Button>
       </form>

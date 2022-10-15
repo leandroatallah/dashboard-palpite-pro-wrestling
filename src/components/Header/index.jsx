@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom"
 import { LoginContext } from '../../context/authContext'
 
 import logo from '../../assets/images/logo.svg'
-import user from '../../assets/images/user.png'
+import user from '../../assets/images/user.jpg'
 import bell from '../../assets/images/bell.svg'
 
 const menuItems = [
@@ -48,7 +48,7 @@ const Header = () => {
         </div>
         <div className="flex justify-end items-center gap-4">
           <IconButton src={bell} alt="notifications" />
-          <Link to="/conta">
+          <Link to="/conta" className="w-[60px] h-[60px] overflow-hidden rounded-lg">
             <img src={user} alt="user" />
           </Link>
           <button onClick={handleLogout}>Sair</button>
