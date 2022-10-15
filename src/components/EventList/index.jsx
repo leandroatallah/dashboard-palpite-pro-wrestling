@@ -31,7 +31,7 @@ const EventList = ({ items, direction, isLoading }) => {
 
   return (
     <div className={`gap-6 ${isColumn ? 'flex flex-col' : 'grid grid-cols-2 xl:grid-cols-3'}`}>
-      {items.map(item => (
+      {items?.length > 0 && items.map(item => (
         <EventItem className={isColumn ? "min-column-height" : 'min-h-[200px]'} key={item.title} {...item} />
       ))}
     </div>

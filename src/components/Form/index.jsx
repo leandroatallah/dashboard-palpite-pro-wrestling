@@ -1,13 +1,25 @@
-export const Input = (props) => {
+import spinner from '../../assets/images/spinner.svg'
+
+const formControl = "w-full h-[48px] rounded-md"
+const error = "border-red-800"
+
+export const Input = ({ isError, errorText, ...rest }) => {
   return (
-    <input className="w-full h-[48px] my-2 px-3 rounded-md bg-zinc-800 border-2 border-zinc-700" {...props} />
+    <div className="my-2">
+      <input
+        className={`${formControl} px-3 mb-1 bg-zinc-800 border-2 border-zinc-700 ${isError ? error : ''}`}
+        {...rest}
+      />
+      {isError && errorText && <div className="font-light text-sm text-zinc-200">{errorText}</div>}
+    </div>
   )
 }
 
-export const Button = ({ children, ...rest }) => {
+
+export const Button = ({ children, loading, ...rest }) => {
   return (
-    <button className="w-full h-[48px] my-2 rounded-md bg-white text-black font-bold" {...rest}>
-      {children}
+    <button disabled={loading} className={`${formControl} flex justify-center items-center gap-1 bg-white text-black font-bold text-lg`} {...rest}>
+      {loading && <img src={spinner} alt="loading" width="28" />} {children}
     </button>
   )
 }

@@ -1,57 +1,68 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Link } from "react-router-dom"
-import Card from '../../components/Card'
+import { LoginContext } from '../../context/authContext'
 import { Button, Input } from '../../components/Form'
-import logo from '../../assets/images/logo.svg'
+import LayoutSignin from '../../components/LayoutSignin'
+import { isEmailValid, isPasswordValid } from '../../utils'
 
 const Login = () => {
+  const { handleLogin } = useContext(LoginContext)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showError, setShowError] = useState(false)
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault()
+    setShowError(false)
+
+    if (!isEmailValid(email) || !isPasswordValid(password)) {
+      return setShowError(true)
+    }
+
     setIsSubmitting(true)
+    setShowError(false)
 
-    // ...
+    const login = await handleLogin(email, password)
 
+    setShowError(!login)
     setIsSubmitting(false)
   }
 
   return (
-    <div className="flex-center h-screen">
-      <Card className="max-w-[420px] w-full">
-        <div className="mb-4">
-          <img className="mx-auto" src={logo} alt="logo" />
-        </div>
+    <LayoutSignin callToAction={
+      <><Link to="/signup" className="text-white font-semibold">Clique aqui</Link> para cadastrar</>
+    }>
+      <form onSubmit={handleSubmit}>
+        <Input
+          required
+          type="email"
+          name="email"
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          placeholder="Digite seu email"
+          isError={showError && !isEmailValid(email)}
+          errorText="Insira um email válido"
+        />
+        <Input
+          required
+          type="password"
+          name="password"
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          placeholder="Digite sua senha"
+          isError={showError && !isPasswordValid(password)}
+          errorText="A senha deve ter pelo menos 6 caracteres"
+        />
+        <Button type="submit" loading={isSubmitting}>
+          Entrar
+        </Button>
 
-        <form onSubmit={handleSubmit}>
-          <Input
-            required
-            type="email"
-            name="email"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            placeholder="Digite seu email"
-          />
-          <Input
-            required
-            type="password"
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            placeholder="Digite sua senha"
-          />
-          <Button type="submit" disabled={isSubmitting}>
-            Entrar
-          </Button>
-
-          <div className="mt-4 pt-4 border-0 border-t-2 border-zinc-800 text-center text-zinc-400">
-            <Link to="/signup"><a className="text-white font-semibold">Clique aqui</a></Link> para cadastrar
-          </div>
-        </form>
-      </Card>
-    </div>
+        {showError && <div className="mt-4 text-center font-light text-base text-red-500">
+          Email e/ou senha inválidos
+        </div>}
+      </form>
+    </LayoutSignin>
   )
 }
 

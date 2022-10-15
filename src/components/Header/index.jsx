@@ -1,4 +1,6 @@
+import { useContext } from 'react'
 import { Link, useLocation } from "react-router-dom"
+import { LoginContext } from '../../context/authContext'
 
 import logo from '../../assets/images/logo.svg'
 import user from '../../assets/images/user.png'
@@ -21,6 +23,7 @@ const IconButton = ({ children, src, alt, ...rest }) => {
 
 const Header = () => {
   const location = useLocation()
+  const { handleLogout } = useContext(LoginContext)
 
   return (
     <header className="py-4 px-4 lg:px-10 mb-3 bg-cardDark">
@@ -48,6 +51,7 @@ const Header = () => {
           <Link to="/conta">
             <img src={user} alt="user" />
           </Link>
+          <button onClick={handleLogout}>Sair</button>
         </div>
       </div>
     </header>
