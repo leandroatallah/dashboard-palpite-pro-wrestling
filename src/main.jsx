@@ -12,6 +12,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <App />
     </AuthProvider>
-    <ToastContainer />
+    <ToastContainer position="bottom-left" autoClose="4000" />
   </React.StrictMode>
 )

@@ -9,7 +9,7 @@ axios.defaults.baseURL = API_URL;
 axios.defaults.timeout = 99999;
 axios.defaults.headers = {
   accept: 'application/json',
-  'Content-Type': 'application/json',
+  'Content-Type': 'application/x-www-form-urlencoded',
 };
 
 axios.interceptors.request.use(

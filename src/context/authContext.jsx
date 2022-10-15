@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     return await api.post('/user/login', {
       username: email,
       password
-    }).then(({ data }) => {
+    }).then(async ({ data }) => {
       const { access_token } = data
 
       if (!access_token) {
@@ -50,7 +50,10 @@ export const AuthProvider = ({ children }) => {
       email,
       password
     }).then(() => {
-      toast.success("Usuário cadastrado com sucesso.");
+      toast.success("Usuário cadastrado com sucesso.", {
+        pauseOnHover: false,
+        autoClose: 3000,
+      });
       return true
     })
       .catch((e) => {
