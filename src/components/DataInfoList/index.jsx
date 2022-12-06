@@ -7,7 +7,7 @@ const DataInfoItem = ({ title, value, color }) => {
   )
 }
 
-const DataInfoList = props => {
+const DataInfoList = () => {
   return (
     <div className="flex flex-nowrap gap-4">
       <DataInfoItem title="Ranking geral" value="12º" color="bg-amber-600" />

@@ -3,7 +3,7 @@ import moment from 'moment'
 
 const EventItem = ({ thumb, title, date, description, link = '#', className, ...rest }) => {
   return (
-    <div className={`flex rounded-2xl overflow-hidden bg-cardDark ${className}`}>
+    <div className={`event-item flex rounded-2xl overflow-hidden bg-cardDark ${className}`}>
       <Link to={link} className={`min-w-[160px] w-4/12 bg-cover bg-center`} style={{ backgroundImage: `url(${thumb})` }} />
       <div className="w-8/12 p-5">
         <div className="text-lg font-bold uppercase mb-2">
@@ -28,7 +28,13 @@ const EventList = ({ items, direction, isLoading }) => {
   // TODO: Create feedback for loading
   if (isLoading) {
     return (
-      <div>Carregando</div>
+      <div>Carregando...</div>
+    )
+  }
+
+  if (!items?.length) {
+    return (
+      <div>Não há eventos.</div>
     )
   }
 

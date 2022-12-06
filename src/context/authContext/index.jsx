@@ -3,7 +3,7 @@ import { createContext } from 'react'
 import { redirect } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
-import api from '../services/api'
+import api from '../../services/api'
 
 export const LoginContext = createContext()
 
@@ -58,9 +58,11 @@ export const AuthProvider = ({ children }) => {
     })
       .catch((e) => {
         if (e.response.status === 400) {
-          return toast.error("Este email não está disponível");
+          toast.error("Este email não está disponível");
+          return false
         }
-        return toast.error("Houve algum erro ao fazer sua solicitação");
+        toast.error("Houve algum erro ao fazer sua solicitação");
+        return false
       })
   }
 
