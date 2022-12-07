@@ -1,7 +1,12 @@
+import { useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { useQuery } from 'react-query'
 import Card from '../../Card'
 import SectionTitle from '../../SectionTitle'
 import HeaderUser from '../../HeaderUser'
+
+import api from '../../../services/api'
+import { LoginContext } from '../../../context/authContext'
 
 import logo from '../../../assets/images/logo.svg'
 
@@ -21,6 +26,29 @@ const menuItems = [
 ]
 
 const AdminLayout = ({ children, title }) => {
+  const { handleLogout } = useContext(LoginContext)
+
+  const getMeQuery = useQuery('user/me', async () => {
+    return await api.get('/user/me')
+      .then(({ data }) => data)
+  }, {
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+  })
+
+  useEffect(() => {
+    if (getMeQuery?.data) {
+      const { result } = getMeQuery.data
+      if (!result?.isSuperuser) {
+        handleLogout()
+      }
+    }
+  }, [getMeQuery.status])
+
+  if (getMeQuery.isLoading) {
+    return 'Carregando...'
+  }
+
   return (
     <>
       <div className="flex flex-nowrap h-screen">

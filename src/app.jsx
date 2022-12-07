@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query'
 import {
   BrowserRouter,
   Routes,
@@ -21,6 +22,8 @@ import AdminEventos from './pages/Admin/Events';
 import AdminAddEvent from './pages/Admin/Events/new';
 import AdminUsers from './pages/Admin/Users';
 
+const queryClient = new QueryClient()
+
 function Private({ children }) {
   const { authenticated } = useContext(LoginContext)
 
@@ -32,107 +35,109 @@ function Private({ children }) {
 }
 
 const App = () => (
-  <BrowserRouter>
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <Private>
-            <Home />
-          </Private>
-        }
-      />
-      <Route
-        path="/palpites"
-        element={
-          <Private>
-            <Guesses />
-          </Private>
-        }
-      />
-      <Route
-        path="/eventos/:id"
-        element={
-          <Private>
-            <EventDetail />
-          </Private>
-        }
-      />
-      <Route
-        path="/eventos"
-        element={
-          <Private>
-            <Events />
-          </Private>
-        }
-      />
-      <Route
-        path="/ranking"
-        element={
-          <Private>
-            <Ranking />
-          </Private>
-        }
-      />
-      <Route
-        path="/conta"
-        element={
-          <Private>
-            <Account />
-          </Private>
-        }
-      />
-      <Route
-        path="/login"
-        element={<Login />}
-        exact
-      />
-      <Route
-        path="/signup"
-        element={<Signup />}
-        exact
-      />
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Private>
+              <Home />
+            </Private>
+          }
+        />
+        <Route
+          path="/palpites"
+          element={
+            <Private>
+              <Guesses />
+            </Private>
+          }
+        />
+        <Route
+          path="/eventos/:id"
+          element={
+            <Private>
+              <EventDetail />
+            </Private>
+          }
+        />
+        <Route
+          path="/eventos"
+          element={
+            <Private>
+              <Events />
+            </Private>
+          }
+        />
+        <Route
+          path="/ranking"
+          element={
+            <Private>
+              <Ranking />
+            </Private>
+          }
+        />
+        <Route
+          path="/conta"
+          element={
+            <Private>
+              <Account />
+            </Private>
+          }
+        />
+        <Route
+          path="/login"
+          element={<Login />}
+          exact
+        />
+        <Route
+          path="/signup"
+          element={<Signup />}
+          exact
+        />
 
-      {/* Admin routes */}
-      <Route
-        path="/admin/dashboard"
-        element={
-          <Private>
-            <AdminDashboard />
-          </Private>
-        }
-      />
-      <Route
-        path="/admin/eventos"
-        element={
-          <Private>
-            <AdminEventos />
-          </Private>
-        }
-      />
-      <Route
-        path="/admin/eventos/novo"
-        element={
-          <Private>
-            <AdminAddEvent />
-          </Private>
-        }
-      />
-      <Route
-        path="/admin/usuarios"
-        element={
-          <Private>
-            <AdminUsers />
-          </Private>
-        }
-      />
+        {/* Admin routes */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <Private>
+              <AdminDashboard />
+            </Private>
+          }
+        />
+        <Route
+          path="/admin/eventos"
+          element={
+            <Private>
+              <AdminEventos />
+            </Private>
+          }
+        />
+        <Route
+          path="/admin/eventos/novo"
+          element={
+            <Private>
+              <AdminAddEvent />
+            </Private>
+          }
+        />
+        <Route
+          path="/admin/usuarios"
+          element={
+            <Private>
+              <AdminUsers />
+            </Private>
+          }
+        />
 
-      <Route
-        path="*"
-        element={<Navigate replace to="/" />}
-      />
-    </Routes>
-  </BrowserRouter>
+        <Route
+          path="*"
+          element={<Navigate replace to="/" />}
+        />
+      </Routes>
+    </BrowserRouter>
+  </QueryClientProvider>
 )
 
 export default App
