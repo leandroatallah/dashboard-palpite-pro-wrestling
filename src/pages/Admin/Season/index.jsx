@@ -3,7 +3,7 @@ import AdminLayout from '../../../components/Admin/Layout'
 import Card from '../../../components/Card'
 import Table from '../../../components/Table'
 
-const AdminEventos = () => {
+const AdminSeasons = () => {
   const columns = [
     {
       title: 'Id',
@@ -52,7 +52,7 @@ const AdminEventos = () => {
   ]
 
   return (
-    <AdminLayout title="Gerenciar usuários">
+    <AdminLayout title="Gerenciar temporadas">
       <Card>
         <Table
           columns={columns}
@@ -63,4 +63,4 @@ const AdminEventos = () => {
   )
 }
 
-export default AdminEventos
+export default AdminSeasons

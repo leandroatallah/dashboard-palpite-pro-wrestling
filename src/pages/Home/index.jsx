@@ -15,7 +15,9 @@ const Home = () => {
       await api.get('/event/')
         .then(({ data }) => {
           const { result } = data
-          setEvents(result.slice(0, 3))
+          if (result?.length) {
+            setEvents(result.slice(0, 3))
+          }
         })
         .catch(err => {
           console.log(err)

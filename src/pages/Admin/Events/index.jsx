@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AdminLayout from '../../../components/Admin/Layout'
 import Card from '../../../components/Card'
@@ -51,10 +50,6 @@ const AdminEventos = () => {
       link: <Link to="/" className="text-blue-600 font-semibold">Abrir</Link>,
     },
   ]
-
-  useEffect(() => {
-    // Check if is super user
-  }, [])
 
   return (
     <AdminLayout title="Gerenciar eventos">

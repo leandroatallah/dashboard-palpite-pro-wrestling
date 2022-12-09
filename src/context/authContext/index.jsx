@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react'
-import { createContext } from 'react'
+import { useState, useEffect, createContext } from 'react'
 import { redirect } from 'react-router-dom'
 import { toast } from 'react-toastify';
-
+import { useAtom } from 'jotai';
 import api from '../../services/api'
+import { isSuperUserAtom } from '../../store/atoms';
 
 export const LoginContext = createContext()
 
 export const AuthProvider = ({ children }) => {
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
+
+  const [, setIsSuperUser] = useAtom(isSuperUserAtom)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -70,7 +72,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token')
     api.defaults.headers.Authorization = undefined
     setAuthenticated(false)
-
+    setIsSuperUser(false)
     return redirect('/login')
   }
 

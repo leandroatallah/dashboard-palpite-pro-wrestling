@@ -8,19 +8,23 @@ import {
 } from "react-router-dom";
 
 import { LoginContext } from './context/authContext';
+import AdminProtectedProvider from './components/Admin/ProtectedProvider';
 
 import Home from './pages/Home'
 import Guesses from './pages/Guesses'
 import Events from './pages/Events'
 import EventDetail from './pages/Events/Detail'
 import Ranking from './pages/Ranking'
-import Account from './pages/Account'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import AdminDashboard from './pages/Admin/Dashboard';
 import AdminEventos from './pages/Admin/Events';
 import AdminAddEvent from './pages/Admin/Events/new';
+import AdminSeasons from './pages/Admin/Season';
+import AdminAddSeason from './pages/Admin/Season/new';
 import AdminUsers from './pages/Admin/Users';
+import AdminAccount from './pages/Admin/Account';
+
 
 const queryClient = new QueryClient()
 
@@ -79,14 +83,6 @@ const App = () => (
           }
         />
         <Route
-          path="/conta"
-          element={
-            <Private>
-              <Account />
-            </Private>
-          }
-        />
-        <Route
           path="/login"
           element={<Login />}
           exact
@@ -110,7 +106,9 @@ const App = () => (
           path="/admin/eventos"
           element={
             <Private>
-              <AdminEventos />
+              <AdminProtectedProvider>
+                <AdminEventos />
+              </AdminProtectedProvider>
             </Private>
           }
         />
@@ -118,7 +116,29 @@ const App = () => (
           path="/admin/eventos/novo"
           element={
             <Private>
-              <AdminAddEvent />
+              <AdminProtectedProvider>
+                <AdminAddEvent />
+              </AdminProtectedProvider>
+            </Private>
+          }
+        />
+        <Route
+          path="/admin/temporadas"
+          element={
+            <Private>
+              <AdminProtectedProvider>
+                <AdminSeasons />
+              </AdminProtectedProvider>
+            </Private>
+          }
+        />
+        <Route
+          path="/admin/temporadas/novo"
+          element={
+            <Private>
+              <AdminProtectedProvider>
+                <AdminAddSeason />
+              </AdminProtectedProvider>
             </Private>
           }
         />
@@ -126,7 +146,17 @@ const App = () => (
           path="/admin/usuarios"
           element={
             <Private>
-              <AdminUsers />
+              <AdminProtectedProvider>
+                <AdminUsers />
+              </AdminProtectedProvider>
+            </Private>
+          }
+        />
+        <Route
+          path="/admin/perfil"
+          element={
+            <Private>
+              <AdminAccount />
             </Private>
           }
         />

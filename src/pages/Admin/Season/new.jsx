@@ -3,7 +3,7 @@ import AdminLayout from '../../../components/Admin/Layout'
 import Card from '../../../components/Card'
 import { Button, Input } from '../../../components/Form'
 
-const AdminAddEvent = () => {
+const AdminAddSeason = () => {
   const [showError, setShowError] = useState(false)
   const [title, setTitle] = useState('')
   const [thumbUrl, setThumbUrl] = useState('')
@@ -29,7 +29,7 @@ const AdminAddEvent = () => {
   }
 
   return (
-    <AdminLayout title="Gerenciar eventos / Novo">
+    <AdminLayout title="Gerenciar temporadas / Novo">
       <Card>
         <form onSubmit={handleSubmit}>
           <Input
@@ -82,4 +82,4 @@ const AdminAddEvent = () => {
   )
 }
 
-export default AdminAddEvent
+export default AdminAddSeason
