@@ -28,7 +28,7 @@ const AdminAddEvent = ({ edit }) => {
   }, {
     refetchOnMount: true,
     refetchOnWindowFocus: true,
-    enabled: edit
+    enabled: !!edit
   })
 
   useEffect(() => {

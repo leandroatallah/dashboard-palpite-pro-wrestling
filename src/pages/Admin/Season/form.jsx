@@ -1,31 +1,94 @@
+import { useEffect } from 'react';
 import { useState } from 'react'
+import { useQuery } from 'react-query';
+import { Navigate, redirect, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import AdminLayout from '../../../components/Admin/Layout'
 import Card from '../../../components/Card'
 import { Button, Input } from '../../../components/Form'
+import api from '../../../services/api'
 
-const AdminAddSeason = () => {
+const AdminAddSeason = ({ edit }) => {
   const [showError, setShowError] = useState(false)
   const [title, setTitle] = useState('')
-  const [thumbUrl, setThumbUrl] = useState('')
-  const [date, setDate] = useState('')
-  const [description, setDescription] = useState('')
+  const [status, setStatus] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const { id: seasonId } = useParams()
+
+  const seasonEditQuery = useQuery('season/id', async () => {
+    return await api.get(`season/${seasonId}`)
+      .then(({ data }) => data?.result)
+      .catch(() => {
+        toast.error("Houve algum erro ao fazer sua solicitação");
+        return <Navigate to="/admin/temporadas" />
+      })
+  }, {
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    enabled: !!edit
+  })
+
+  useEffect(() => {
+    if (seasonEditQuery.isSuccess) {
+      const { title, status } = seasonEditQuery.data
+
+      setTitle(title)
+      setStatus(status)
+    }
+  }, [seasonEditQuery.status])
+
+  useEffect(() => {
+    if (!edit) {
+      setTitle('')
+      setStatus('')
+    }
+  }, [edit])
 
   async function handleSubmit(e) {
     e.preventDefault()
     setShowError(false)
 
-    if (!title || !thumbUrl || !date || !description) {
+    if (!title || !status) {
       return setShowError(true)
     }
 
     setIsSubmitting(true)
     setShowError(false)
 
-    // add event
-    alert('Evento adicionado')
+    let param = 'create'
 
-    setIsSubmitting(false)
+    if (edit) {
+      param = 'update'
+    }
+
+    await api.post(`/season/${param}`, {
+      parameter: {
+        id: seasonId,
+        title,
+        status,
+      }
+    })
+      .then(() => {
+        setTitle('')
+        setStatus('')
+        toast.success(
+          edit ?
+            "Temporada atualizada com sucesso." :
+            "Temporada cadastrada com sucesso."
+        )
+        return redirect('/admin/temporadas')
+      })
+      .catch(err => {
+        console.log(err)
+        return toast.error("Houve algum erro ao fazer sua solicitação");
+      }).finally(() => {
+        setIsSubmitting(false)
+      })
+  }
+
+  if (seasonEditQuery.isLoading) {
+    return 'Carregando...'
   }
 
   return (
@@ -37,40 +100,23 @@ const AdminAddSeason = () => {
             type="text"
             name="title"
             onChange={(e) => setTitle(e.target.value)}
+            defaultValue={title}
             value={title}
-            placeholder="Digite o título do evento"
+            placeholder="Digite o título da temporada"
             isError={showError}
-          />
-          <Input
-            required
-            type="url"
-            name="thumb"
-            onChange={(e) => setThumbUrl(e.target.value)}
-            value={thumbUrl}
-            placeholder="Digite o endereço (url) da thumbnail"
-            isError={showError}
-            errorText="Insira uma URL válida"
           />
           <Input
             required
             type="text"
-            name="date"
-            onChange={(e) => setDate(e.target.value)}
-            value={date}
-            placeholder="Digite a data do evento"
-            isError={showError}
-          />
-          <Input
-            required
-            type="date"
-            name="date"
-            onChange={(e) => setDescription(e.target.value)}
-            value={description}
-            placeholder="Digite uma descrição"
+            name="status"
+            onChange={(e) => setStatus(e.target.value)}
+            defaultValue={status}
+            value={status}
+            placeholder="Status"
             isError={showError}
           />
           <Button type="submit" loading={isSubmitting}>
-            Cadastrar
+            {edit ? 'Atualizar' : 'Cadastrar'}
           </Button>
 
           {showError && <div className="mt-4 text-center font-light text-base text-red-500">

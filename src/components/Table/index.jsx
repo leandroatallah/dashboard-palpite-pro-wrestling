@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const ITEMS_PER_PAGE = 3
+const ITEMS_PER_PAGE = 10
 
 const Table = ({ columns, data }) => {
   const [page, setPage] = useState(1)

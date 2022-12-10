@@ -146,6 +146,14 @@ const App = () => (
           }
         />
         <Route
+          path="/admin/temporadas/:id"
+          element={
+            <Private onlySuperUser>
+              <AdminAddSeason edit />
+            </Private>
+          }
+        />
+        <Route
           path="/admin/usuarios"
           element={
             <Private onlySuperUser>
