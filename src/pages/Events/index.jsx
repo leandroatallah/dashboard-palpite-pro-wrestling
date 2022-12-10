@@ -1,35 +1,30 @@
-import { useState, useEffect } from 'react'
+import { useQuery } from 'react-query'
 import Layout from '../../components/Layout'
 import SectionTitle from '../../components/SectionTitle'
 import EventList from '../../components/EventList'
 import api from '../../services/api'
 
 const Eventos = () => {
-  const [events, setEvents] = useState([])
-  const [isLoadingEvents, setIsLoadingEvents] = useState(true)
-
-  useEffect(() => {
-    (async () => {
-      await api.get('/event/')
-        .then(({ data }) => {
-          const { result } = data
-          setEvents(result)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-        .finally(() => {
-          setIsLoadingEvents(false)
-        })
-    })()
-  }, [])
+  const eventQuery = useQuery('event', async () => {
+    return await api.get('/event/')
+      .then(({ data }) => data?.result)
+      .catch(err => {
+        console.log(err)
+      })
+  }, {
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+  })
 
   return (
     <Layout>
       <SectionTitle>
         Eventos
       </SectionTitle>
-      <EventList items={events} isLoading={isLoadingEvents} />
+      <EventList
+        items={eventQuery.data?.length ? eventQuery.data : null}
+        isLoading={eventQuery.isLoading}
+      />
     </Layout>
   )
 }

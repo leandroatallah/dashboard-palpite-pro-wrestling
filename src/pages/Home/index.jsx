@@ -1,32 +1,22 @@
-import { useState, useEffect } from 'react'
 import Layout from '../../components/Layout'
 import SectionTitle from '../../components/SectionTitle'
 import Card from '../../components/Card'
 import DataInfoList from '../../components/DataInfoList'
 import EventList from '../../components/EventList'
 import api from '../../services/api'
+import { useQuery } from 'react-query'
 
 const Home = () => {
-  const [events, setEvents] = useState([])
-  const [isLoadingEvents, setIsLoadingEvents] = useState(true)
-
-  useEffect(() => {
-    (async () => {
-      await api.get('/event/')
-        .then(({ data }) => {
-          const { result } = data
-          if (result?.length) {
-            setEvents(result.slice(0, 3))
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
-        .finally(() => {
-          setIsLoadingEvents(false)
-        })
-    })()
-  }, [])
+  const eventQuery = useQuery('event', async () => {
+    return await api.get('/event/')
+      .then(({ data }) => data?.result)
+      .catch(err => {
+        console.log(err)
+      })
+  }, {
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+  })
 
   return (
     <Layout>
@@ -47,7 +37,11 @@ const Home = () => {
           <SectionTitle link={{ label: "+ VER MAIS", href: "/eventos" }}>
             Próximos eventos
           </SectionTitle>
-          <EventList items={events} direction="column" isLoading={isLoadingEvents} />
+          <EventList
+            items={eventQuery.data?.length ? eventQuery.data.slice(0, 3) : []}
+            direction="column"
+            isLoading={eventQuery.isLoading}
+          />
         </div>
       </div>
       <Card className="min-h-[200px] md:min-h-[280px] flex-center">

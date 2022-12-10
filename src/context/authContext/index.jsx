@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { useAtom } from 'jotai';
 import api from '../../services/api'
 import { isSuperUserAtom } from '../../store/atoms';
+import { queryClient } from '../../services/query';
 
 export const LoginContext = createContext()
 
@@ -73,6 +74,7 @@ export const AuthProvider = ({ children }) => {
     api.defaults.headers.Authorization = undefined
     setAuthenticated(false)
     setIsSuperUser(false)
+    queryClient.removeQueries()
     return redirect('/login')
   }
 
