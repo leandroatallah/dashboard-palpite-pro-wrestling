@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClientProvider } from 'react-query'
 import {
   BrowserRouter,
   Routes,
@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 
 import { LoginContext } from './context/authContext';
-import AdminProtectedProvider from './components/Admin/ProtectedProvider';
 
 import Home from './pages/Home'
 import Guesses from './pages/Guesses'
@@ -19,23 +18,27 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import AdminDashboard from './pages/Admin/Dashboard';
 import AdminEventos from './pages/Admin/Events';
-import AdminAddEvent from './pages/Admin/Events/new';
+import AdminAddEvent from './pages/Admin/Events/form';
 import AdminSeasons from './pages/Admin/Season';
-import AdminAddSeason from './pages/Admin/Season/new';
+import AdminAddSeason from './pages/Admin/Season/form';
 import AdminUsers from './pages/Admin/Users';
 import AdminAccount from './pages/Admin/Account';
+import { isSuperUserAtom } from './store/atoms';
+import { useAtom } from 'jotai';
+import { queryClient } from './services/query'
 
+function Private({ children, onlySuperUser }) {
+  const { authenticated, handleLogout } = useContext(LoginContext)
 
-const queryClient = new QueryClient()
+  const [isSuperUser] = useAtom(isSuperUserAtom)
 
-function Private({ children }) {
-  const { authenticated } = useContext(LoginContext)
-
-  if (!authenticated) {
+  if (!authenticated || (onlySuperUser && !isSuperUser)) {
+    handleLogout()
     return <Navigate replace to="/login" />
   }
 
-  return <>{children}</>
+
+  return children
 }
 
 const App = () => (
@@ -105,50 +108,48 @@ const App = () => (
         <Route
           path="/admin/eventos"
           element={
-            <Private>
-              <AdminProtectedProvider>
-                <AdminEventos />
-              </AdminProtectedProvider>
+            <Private onlySuperUser>
+              <AdminEventos />
             </Private>
           }
         />
         <Route
           path="/admin/eventos/novo"
           element={
-            <Private>
-              <AdminProtectedProvider>
-                <AdminAddEvent />
-              </AdminProtectedProvider>
+            <Private onlySuperUser>
+              <AdminAddEvent />
+            </Private>
+          }
+        />
+        <Route
+          path="/admin/eventos/:id"
+          element={
+            <Private onlySuperUser>
+              <AdminAddEvent edit />
             </Private>
           }
         />
         <Route
           path="/admin/temporadas"
           element={
-            <Private>
-              <AdminProtectedProvider>
-                <AdminSeasons />
-              </AdminProtectedProvider>
+            <Private onlySuperUser>
+              <AdminSeasons />
             </Private>
           }
         />
         <Route
           path="/admin/temporadas/novo"
           element={
-            <Private>
-              <AdminProtectedProvider>
-                <AdminAddSeason />
-              </AdminProtectedProvider>
+            <Private onlySuperUser>
+              <AdminAddSeason />
             </Private>
           }
         />
         <Route
           path="/admin/usuarios"
           element={
-            <Private>
-              <AdminProtectedProvider>
-                <AdminUsers />
-              </AdminProtectedProvider>
+            <Private onlySuperUser>
+              <AdminUsers />
             </Private>
           }
         />

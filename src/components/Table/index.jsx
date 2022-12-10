@@ -22,9 +22,9 @@ const Table = ({ columns, data }) => {
         <div className="tbody">
           {displayedItems.map((row) => (
             <div className="tr flex flex-nowrap border-b border-zinc-700 last:border-b-0" key={row.id}>
-              {columns.map(({ key, small }) => (
+              {columns.map(({ key, small, render, renderKey }) => (
                 <div className={`td ${small ? 'w-1/2' : 'w-full'} p-4 py-3 text-sm`} key={key}>
-                  {row[key]}
+                  {render ? render(row[renderKey || key]) : row[renderKey || key]}
                 </div>
               ))}
             </div>

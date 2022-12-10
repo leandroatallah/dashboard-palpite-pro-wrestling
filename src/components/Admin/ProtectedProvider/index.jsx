@@ -1,28 +1,31 @@
-import { useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import { useQuery } from 'react-query'
-
 import api from '../../../services/api'
 import { LoginContext } from '../../../context/authContext'
+import { isSuperUserAtom } from '../../../store/atoms'
+import { useAtom } from 'jotai'
+import { useEffect } from 'react'
 
 const AdminProtectedProvider = ({ children }) => {
   const { handleLogout } = useContext(LoginContext)
 
+  const [, setIsSuperUser] = useAtom(isSuperUserAtom)
+
   const getMeQuery = useQuery('user/me', async () => {
     return await api.get('/user/me')
-      .then(({ data }) => data)
+      .then(({ data }) => data?.result)
+      .catch(() => {
+        handleLogout()
+      })
   }, {
-    refetchOnMount: true,
+    refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
 
   useEffect(() => {
-    if (getMeQuery?.data) {
-      const { result } = getMeQuery.data
-      if (!result?.isSuperuser) {
-        handleLogout()
-      }
-    }
+    setIsSuperUser(getMeQuery.data?.isSuperuser)
   }, [getMeQuery.status])
+
 
   if (getMeQuery.isLoading) {
     return 'Carregando...'
