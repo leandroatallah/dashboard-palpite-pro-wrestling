@@ -10,18 +10,10 @@ import logo from '../../../assets/images/logo.svg'
 
 const menuItems = [
   { label: 'Dashboard', href: "/admin/dashboard" },
-  {
-    label: 'Eventos', onlySuperUser: true, items: [
-      { label: 'Todos', href: "/admin/eventos" },
-      { label: 'Adicionar novo', href: "/admin/eventos/novo" },
-    ]
-  },
-  {
-    label: 'Temporadas', onlySuperUser: true, items: [
-      { label: 'Todas', href: "/admin/temporadas" },
-      { label: 'Adicionar nova', href: "/admin/temporadas/novo" },
-    ]
-  },
+  { label: 'Eventos', onlySuperUser: true, href: "/admin/eventos" },
+  { label: 'Lutadores', onlySuperUser: true, href: "/admin/lutadores" },
+  { label: 'Temporadas', onlySuperUser: true, href: "/admin/temporadas" },
+  { label: 'Palpites', href: "/admin/palpites" },
   { label: 'Usuários', onlySuperUser: true, href: "/admin/usuarios" },
   { label: 'Perfil', href: "/admin/perfil" },
 ]
