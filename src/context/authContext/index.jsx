@@ -8,6 +8,15 @@ import { queryClient } from '../../services/query';
 
 export const LoginContext = createContext()
 
+function isJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
 export const AuthProvider = ({ children }) => {
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -17,9 +26,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token')
 
-    if (token) {
+    if (token && isJsonString(token)) {
       api.defaults.headers.Authorization = `Bearer ${JSON.parse(token)}`
       setAuthenticated(true)
+    } else {
+      handleLogout()
     }
 
     setLoading(false)
@@ -75,6 +86,7 @@ export const AuthProvider = ({ children }) => {
     setAuthenticated(false)
     setIsSuperUser(false)
     queryClient.removeQueries()
+    queryClient.cancelQueries()
     return redirect('/login')
   }
 
