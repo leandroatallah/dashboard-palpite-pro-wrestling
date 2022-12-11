@@ -67,7 +67,7 @@ const Signup = () => {
             isError={showError && !isPasswordValid(password)}
             errorText="A senha deve ter pelo menos 6 caracteres"
           />
-          <Button type="submit" loading={isSubmitting}>
+          <Button color="success" type="submit" loading={isSubmitting}>
             Cadastrar
           </Button>
         </form>
