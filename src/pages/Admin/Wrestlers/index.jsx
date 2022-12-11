@@ -6,12 +6,11 @@ import Card from '../../../components/Card'
 import Table from '../../../components/Table'
 import api from '../../../services/api'
 import { queryClient } from '../../../services/query';
-import seasonStatus from '../../../config/seasonStatus.json'
 import { Button } from '../../../components/Form'
 
-const AdminSeasons = () => {
-  const seasonQuery = useQuery('season', async () => {
-    return await api.get('/season/')
+const AdminWrestlers = () => {
+  const wrestlerQuery = useQuery('wrestler', async () => {
+    return await api.get('/wrestler/')
       .then(({ data }) => data?.result)
       .catch(err => {
         console.log(err)
@@ -28,46 +27,40 @@ const AdminSeasons = () => {
       small: true,
     },
     {
-      title: 'Title',
-      key: 'title'
-    },
-    {
-      title: 'Status',
-      key: 'status',
-      small: true,
-      render: (status) => seasonStatus.find((item) => item.value === status)?.label || ''
+      title: 'Nome',
+      key: 'name'
     },
     {
       title: '',
       key: 'edit',
       small: true,
-      render: (id) => <Link className="text-blue-600 font-semibold" to={`/admin/temporadas/${id}`}>Editar</Link>,
+      render: (id) => <Link className="text-blue-600 font-semibold" to={`/admin/lutadores/${id}`}>Editar</Link>,
       renderKey: 'id'
     },
   ]
 
   useEffect(() => {
-    queryClient.removeQueries('season/id')
+    queryClient.removeQueries('wrestler/id')
 
-    return () => queryClient.removeQueries('season')
+    return () => queryClient.removeQueries('wrestler')
   }, [])
 
   return (
-    <AdminLayout title="Gerenciar temporadas">
+    <AdminLayout title="Gerenciar lutadores">
       <Card>
         <div className="mb-4 text-right">
-          <Link to="/admin/temporadas/novo">
+          <Link to="/admin/lutadores/novo">
             <Button inline color="success" type="button">+ Adicionar novo</Button>
           </Link>
         </div>
         <Table
           columns={columns}
-          data={seasonQuery.data?.length ? seasonQuery.data : []}
-          isLoading={seasonQuery.isLoading}
+          data={wrestlerQuery.data?.length ? wrestlerQuery.data : []}
+          isLoading={wrestlerQuery.isLoading}
         />
       </Card>
     </AdminLayout>
   )
 }
 
-export default AdminSeasons
+export default AdminWrestlers

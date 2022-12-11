@@ -1,0 +1,14 @@
+[
+  {
+    "value": "inactive",
+    "label": "Inativo"
+  },
+  {
+    "value": "active",
+    "label": "Ativo"
+  },
+  {
+    "value": "closed",
+    "label": "Encerrado"
+  }
+]

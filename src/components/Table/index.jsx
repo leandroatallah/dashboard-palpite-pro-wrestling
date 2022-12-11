@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const ITEMS_PER_PAGE = 10
 
-const Table = ({ columns, data }) => {
+const Table = ({ columns, data, isLoading }) => {
   const [page, setPage] = useState(1)
   const displayedItems = data?.length ? data.slice(page * ITEMS_PER_PAGE - ITEMS_PER_PAGE, page * ITEMS_PER_PAGE) : []
   const paginationItems = Array(Math.ceil(data.length / ITEMS_PER_PAGE)).fill(0)
@@ -18,6 +18,15 @@ const Table = ({ columns, data }) => {
           ))}
         </div>
       </div>
+
+      {isLoading ? (
+        <div className="p-8 text-center">Carregando...</div>
+      ) : null}
+
+      {!isLoading && !data?.length ? (
+        <div className="p-8 text-center">Sem dados</div>
+      ) : null}
+
       {data?.length ? (
         <div className="tbody">
           {displayedItems.map((row) => (
@@ -30,9 +39,7 @@ const Table = ({ columns, data }) => {
             </div>
           ))}
         </div>
-      ) : (
-        <div className="p-8 text-center">Sem dados</div>
-      )}
+      ) : null}
       {data?.length ? (
         <div className="tfoot border-t border-zinc-700 flex justify-between items-center py-2 px-4">
           <div className="text-xs">

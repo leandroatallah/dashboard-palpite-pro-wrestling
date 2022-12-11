@@ -19,6 +19,10 @@ const menuItems = [
     href: '/admin/dashboard',
   },
   {
+    label: 'Palpites',
+    href: "/admin/palpites"
+  },
+  {
     label: 'Editar perfil',
     href: '/admin/perfil',
   },

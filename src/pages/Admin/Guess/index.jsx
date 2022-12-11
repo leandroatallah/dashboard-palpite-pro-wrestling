@@ -7,11 +7,10 @@ import Table from '../../../components/Table'
 import api from '../../../services/api'
 import { queryClient } from '../../../services/query';
 import seasonStatus from '../../../config/seasonStatus.json'
-import { Button } from '../../../components/Form'
 
-const AdminSeasons = () => {
-  const seasonQuery = useQuery('season', async () => {
-    return await api.get('/season/')
+const AdminGuess = () => {
+  const guessQuery = useQuery('guess', async () => {
+    return await api.get('/guess/')
       .then(({ data }) => data?.result)
       .catch(err => {
         console.log(err)
@@ -28,8 +27,8 @@ const AdminSeasons = () => {
       small: true,
     },
     {
-      title: 'Title',
-      key: 'title'
+      title: 'Evento',
+      key: 'event'
     },
     {
       title: 'Status',
@@ -47,27 +46,22 @@ const AdminSeasons = () => {
   ]
 
   useEffect(() => {
-    queryClient.removeQueries('season/id')
+    queryClient.removeQueries('guess/id')
 
-    return () => queryClient.removeQueries('season')
+    return () => queryClient.removeQueries('guess')
   }, [])
 
   return (
-    <AdminLayout title="Gerenciar temporadas">
+    <AdminLayout title="Gerenciar palpites">
       <Card>
-        <div className="mb-4 text-right">
-          <Link to="/admin/temporadas/novo">
-            <Button inline color="success" type="button">+ Adicionar novo</Button>
-          </Link>
-        </div>
         <Table
           columns={columns}
-          data={seasonQuery.data?.length ? seasonQuery.data : []}
-          isLoading={seasonQuery.isLoading}
+          data={guessQuery.data?.length ? guessQuery.data : []}
+          isLoading={guessQuery.isLoading}
         />
       </Card>
     </AdminLayout>
   )
 }
 
-export default AdminSeasons
+export default AdminGuess

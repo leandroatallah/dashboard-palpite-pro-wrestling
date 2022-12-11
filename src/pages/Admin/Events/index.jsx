@@ -7,6 +7,7 @@ import Card from '../../../components/Card'
 import Table from '../../../components/Table'
 import api from '../../../services/api'
 import { queryClient } from '../../../services/query';
+import { Button } from '../../../components/Form'
 
 const AdminEventos = () => {
   const eventQuery = useQuery('event', async () => {
@@ -40,23 +41,29 @@ const AdminEventos = () => {
       title: '',
       key: 'edit',
       small: true,
-      render: (id) => <Link to={`/admin/eventos/${id}`}>Editar</Link>,
+      render: (id) => <Link className="text-blue-600 font-semibold" to={`/admin/eventos/${id}`}>Editar</Link>,
       renderKey: 'id'
     },
   ]
 
-
-
   useEffect(() => {
     queryClient.removeQueries('event/id')
+
+    return () => queryClient.removeQueries('event')
   }, [])
 
   return (
     <AdminLayout title="Gerenciar eventos">
       <Card>
+        <div className="mb-4 text-right">
+          <Link to="/admin/eventos/novo">
+            <Button inline color="success" type="button">+ Adicionar novo</Button>
+          </Link>
+        </div>
         <Table
           columns={columns}
           data={eventQuery.data?.length ? eventQuery.data : []}
+          isLoading={eventQuery.isLoading}
         />
       </Card>
     </AdminLayout>

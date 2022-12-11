@@ -4,26 +4,24 @@ import { Navigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AdminLayout from '../../../components/Admin/Layout'
 import Card from '../../../components/Card'
-import { Button, Input, Select } from '../../../components/Form'
+import { Button, Input } from '../../../components/Form'
 import api from '../../../services/api'
 import { queryClient } from '../../../services/query';
-import seasonStatus from '../../../config/seasonStatus.json'
 
-const AdminAddSeason = ({ edit }) => {
+const AdminAddWrestler = ({ edit }) => {
   const [showError, setShowError] = useState(false)
-  const [title, setTitle] = useState('')
-  const [status, setStatus] = useState('')
+  const [name, setName] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [redirectTo, setRedirectTo] = useState(false)
 
-  const { id: seasonId } = useParams()
+  const { id: wrestlerId } = useParams()
 
-  const seasonEditQuery = useQuery('season/id', async () => {
-    return await api.get(`season/${seasonId}`)
+  const wrestlerEditQuery = useQuery('wrestler/id', async () => {
+    return await api.get(`wrestler/${wrestlerId}`)
       .then(({ data }) => data?.result)
       .catch(() => {
         toast.error("Houve algum erro ao fazer sua solicitação");
-        return <Navigate to="/admin/temporadas" />
+        setRedirectTo('/admin/lutadores')
       })
   }, {
     refetchOnMount: true,
@@ -32,18 +30,16 @@ const AdminAddSeason = ({ edit }) => {
   })
 
   useEffect(() => {
-    if (seasonEditQuery.isSuccess && seasonEditQuery.data) {
-      const { title, status } = seasonEditQuery.data
+    if (wrestlerEditQuery.isSuccess && wrestlerEditQuery.data) {
+      const { name } = wrestlerEditQuery.data
 
-      setTitle(title)
-      setStatus(status)
+      setName(name)
     }
-  }, [seasonEditQuery.status])
+  }, [wrestlerEditQuery.status])
 
   useEffect(() => {
     if (!edit) {
-      setTitle('')
-      setStatus('')
+      setName('')
     }
   }, [edit])
 
@@ -51,7 +47,7 @@ const AdminAddSeason = ({ edit }) => {
     e.preventDefault()
     setShowError(false)
 
-    if (!title || !status) {
+    if (!name) {
       return setShowError(true)
     }
 
@@ -64,23 +60,21 @@ const AdminAddSeason = ({ edit }) => {
       param = 'update'
     }
 
-    await api.post(`/season/${param}`, {
+    await api.post(`/wrestler/${param}`, {
       parameter: {
-        id: seasonId,
-        title,
-        status,
+        id: wrestlerId,
+        name,
       }
     })
       .then(() => {
-        setTitle('')
-        setStatus('')
+        setName('')
         toast.success(
           edit ?
-            "Temporada atualizada com sucesso." :
-            "Temporada cadastrada com sucesso."
+            "Lutador atualizado com sucesso." :
+            "Lutador cadastrado com sucesso."
         )
         queryClient.removeQueries()
-        setRedirectTo('/admin/temporadas')
+        setRedirectTo('/admin/lutadores')
       })
       .catch(err => {
         console.log(err)
@@ -94,11 +88,11 @@ const AdminAddSeason = ({ edit }) => {
     setIsSubmitting(true)
     setShowError(false)
 
-    await api.delete(`/season/${seasonId}`)
+    await api.delete(`/wrestler/${wrestlerId}`)
       .then(() => {
-        toast.success("Temporada excluída com sucesso.")
+        toast.success("Lutador excluído com sucesso.")
         queryClient.removeQueries()
-        setRedirectTo('/admin/temporadas')
+        setRedirectTo('/admin/lutadores')
       })
       .catch(err => {
         console.log(err)
@@ -108,42 +102,24 @@ const AdminAddSeason = ({ edit }) => {
       })
   }
 
-  if (seasonEditQuery.isLoading) {
-    return 'Carregando...'
-  }
-
   if (!!redirectTo) {
     return <Navigate to={redirectTo} />
   }
 
   return (
-    <AdminLayout title="Gerenciar temporadas / Novo">
+    <AdminLayout title="Gerenciar lutadores / Novo">
       <Card>
-        {seasonEditQuery.isLoading ? 'Carregando...' : (
+        {wrestlerEditQuery.isLoading ? 'Carregando...' : (
           <form onSubmit={handleSubmit}>
             <Input
               required
               type="text"
-              name="title"
-              onChange={(e) => {
-                setTitle(e.target.value)
-              }}
-              value={title}
-              placeholder="Digite o título da temporada"
+              name="name"
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+              placeholder="Digite o nome do lutador"
               isError={showError}
             />
-            <Select
-              onChange={(e) => setStatus(e.target.value)}
-              value={status}
-              items={[
-                {
-                  value: '',
-                  label: 'Selecione o status',
-                  disabled: true
-                },
-                ...seasonStatus
-              ]}
-              isError={showError} />
             <div className="flex justify-end items-center gap-2">
               {edit ? (<Button
                 color="danger"
@@ -168,4 +144,4 @@ const AdminAddSeason = ({ edit }) => {
   )
 }
 
-export default AdminAddSeason
+export default AdminAddWrestler
