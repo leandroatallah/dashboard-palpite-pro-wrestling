@@ -31,6 +31,23 @@ const AdminAddSeason = ({ edit }) => {
     enabled: !!edit
   })
 
+  const eventBySeasonQuery = useQuery('event/season', async () => {
+    return await api.get(`season/?season_id=${seasonId}`)
+      .then(({ data }) => data?.result)
+      .catch(() => {
+        toast.error("Houve algum erro ao fazer sua solicitação");
+        return <Navigate to="/admin/temporadas" />
+      })
+  }, {
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    enabled: !!edit
+  })
+
+  useEffect(() => {
+    console.log(eventBySeasonQuery.data)
+  }, [eventBySeasonQuery.status])
+
   useEffect(() => {
     if (seasonEditQuery.isSuccess && seasonEditQuery.data) {
       const { title, status } = seasonEditQuery.data
@@ -91,6 +108,15 @@ const AdminAddSeason = ({ edit }) => {
   }
 
   async function handleDelete() {
+    if (!window.confirm('Tem certeza que deseja excluir este item?')) {
+      return
+    }
+
+    if (eventBySeasonQuery.data?.length) {
+      toast.error('Não é possível excluir temporadas com eventos vinculados.')
+      return
+    }
+
     setIsSubmitting(true)
     setShowError(false)
 
@@ -108,10 +134,6 @@ const AdminAddSeason = ({ edit }) => {
       })
   }
 
-  if (seasonEditQuery.isLoading) {
-    return 'Carregando...'
-  }
-
   if (!!redirectTo) {
     return <Navigate to={redirectTo} />
   }
@@ -119,7 +141,7 @@ const AdminAddSeason = ({ edit }) => {
   return (
     <AdminLayout title="Gerenciar temporadas / Novo">
       <Card>
-        {seasonEditQuery.isLoading ? 'Carregando...' : (
+        {seasonEditQuery.isLoading || eventBySeasonQuery.isLoading ? 'Carregando...' : (
           <form onSubmit={handleSubmit}>
             <Input
               required
@@ -150,7 +172,7 @@ const AdminAddSeason = ({ edit }) => {
                 inline
                 type="button"
                 loading={isSubmitting}
-                onClick={() => { if (window.confirm('Tem certeza que deseja excluir este item?')) handleDelete() }}>
+                onClick={handleDelete}>
                 Excluir
               </Button>) : null}
               <Button color="success" inline type="submit" loading={isSubmitting}>

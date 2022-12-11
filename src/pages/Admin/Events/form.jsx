@@ -4,7 +4,7 @@ import { Navigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AdminLayout from '../../../components/Admin/Layout'
 import Card from '../../../components/Card'
-import { Button, Input } from '../../../components/Form'
+import { Button, Input, Select } from '../../../components/Form'
 import api from '../../../services/api'
 import { queryClient } from '../../../services/query';
 
@@ -21,6 +21,7 @@ const AdminAddEvent = ({ edit }) => {
   const [thumbUrl, setThumbUrl] = useState('')
   const [date, setDate] = useState('')
   const [description, setDescription] = useState('')
+  const [season, setSeason] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [redirectTo, setRedirectTo] = useState(false)
   const [matchList, setMatchList] = useState([])
@@ -53,14 +54,33 @@ const AdminAddEvent = ({ edit }) => {
     enabled: !!edit
   })
 
+  const seasonListQuery = useQuery('season', async () => {
+    return await api.get(`season/`)
+      .then(({ data }) => {
+        const { result } = data
+        return result.map(({ id, title }) => ({
+          label: title,
+          value: id,
+        }))
+      })
+      .catch(() => {
+        toast.error("Houve algum erro ao fazer sua solicitação");
+        setRedirectTo('/admin/eventos')
+      })
+  }, {
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+  })
+
   useEffect(() => {
     if (eventEditQuery.isSuccess && eventEditQuery.data) {
-      const { title, thumb, date, description } = eventEditQuery.data
+      const { title, thumb, date, description, season_id } = eventEditQuery.data
 
       setTitle(title)
       setThumbUrl(thumb)
       setDate(date)
       setDescription(description)
+      setSeason(season_id)
     }
   }, [eventEditQuery.status])
 
@@ -83,6 +103,7 @@ const AdminAddEvent = ({ edit }) => {
       setThumbUrl('')
       setDate('')
       setDescription('')
+      setSeason('')
     }
   }, [edit])
 
@@ -110,7 +131,7 @@ const AdminAddEvent = ({ edit }) => {
         description,
         date,
         thumb: thumbUrl,
-        // matches: matchList
+        season_id: season,
       }
     })
       .then(() => {
@@ -118,6 +139,8 @@ const AdminAddEvent = ({ edit }) => {
         setThumbUrl('')
         setDate('')
         setDescription('')
+        setSeason('')
+
         toast.success(
           edit ?
             "Evento atualizado com sucesso." :
@@ -264,6 +287,17 @@ const AdminAddEvent = ({ edit }) => {
                 placeholder="Digite uma descrição"
                 isError={showError}
               />
+              <Select
+                onChange={(e) => setSeason(e.target.value)}
+                value={season}
+                items={[
+                  {
+                    value: '',
+                    label: 'Selecione a temporada',
+                    disabled: true
+                  },
+                ].concat(seasonListQuery.data?.length ? seasonListQuery.data : [])}
+                isError={showError} />
 
               <div className="flex justify-end items-center gap-2">
                 {edit ? (<Button
