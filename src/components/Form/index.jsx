@@ -37,13 +37,13 @@ export const Button = ({ children, loading, inline, color, ...rest }) => {
   )
 }
 
-export const Select = ({ items, loading, isError, ...rest }) => {
+export const Select = ({ items, loading, isError, fullWidth, ...rest }) => {
   return (
-    <div className="my-2">
-      <select disabled={loading} className={`${formControl} px-3 mb-1 bg-zinc-800 border-2 border-zinc-700 ${isError ? error : ''}`} {...rest}>
-        {loading && <img src={spinner} alt="loading" width="28" />} {items.map(({ label, value, ...rest }) => {
+    <div className={`my-2 ${fullWidth ? 'w-full' : ''}`}>
+      <select disabled={loading} className={`${formControl} px-3 mb-1 bg-zinc-800 border-2 border-zinc-700 ${isError ? error : ''} ${fullWidth ? 'w-full' : ''}`} {...rest}>
+        {loading && <img src={spinner} alt="loading" width="28" />} {items.map(({ label, value, ...rest }, index) => {
           return (
-            <option value={value} {...rest}>{label}</option>
+            <option value={value} {...rest} key={index}>{label}</option>
           )
         })}
       </select>

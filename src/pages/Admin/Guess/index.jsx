@@ -7,6 +7,7 @@ import Table from '../../../components/Table'
 import api from '../../../services/api'
 import { queryClient } from '../../../services/query';
 import seasonStatus from '../../../config/seasonStatus.json'
+import { Button } from '../../../components/Form'
 
 const AdminGuess = () => {
   const guessQuery = useQuery('guess', async () => {
@@ -54,6 +55,11 @@ const AdminGuess = () => {
   return (
     <AdminLayout title="Gerenciar palpites">
       <Card>
+        <div className="mb-4 text-right">
+          <Link to="/admin/palpites/novo">
+            <Button inline color="success" type="button">+ Adicionar novo</Button>
+          </Link>
+        </div>
         <Table
           columns={columns}
           data={guessQuery.data?.length ? guessQuery.data : []}

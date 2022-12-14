@@ -7,16 +7,16 @@ import Card from '../../../components/Card'
 import { Button, Input, Select } from '../../../components/Form'
 import api from '../../../services/api'
 import { queryClient } from '../../../services/query';
+import eventStatus from '../../../config/eventStatus.json'
 
 const blankMatch = {
   title: '',
   description: '',
-  guesses: [],
-  wrestlers: []
 }
 
 const AdminAddEvent = ({ edit }) => {
   const [showError, setShowError] = useState(false)
+  const [status, setStatus] = useState('')
   const [title, setTitle] = useState('')
   const [thumbUrl, setThumbUrl] = useState('')
   const [date, setDate] = useState('')
@@ -54,6 +54,24 @@ const AdminAddEvent = ({ edit }) => {
     enabled: !!edit
   })
 
+  const wrestlerListQuery = useQuery('wrestler/', async () => {
+    return await api.get(`wrestler/`)
+      .then(({ data }) => {
+        const { result } = data
+        return result.map(({ id, name }) => ({
+          label: name,
+          value: id,
+        }))
+      })
+      .catch(() => {
+        toast.error("Houve algum erro ao fazer sua solicitação");
+        setRedirectTo('/admin/eventos')
+      })
+  }, {
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+  })
+
   const seasonListQuery = useQuery('season', async () => {
     return await api.get(`season/`)
       .then(({ data }) => {
@@ -74,8 +92,9 @@ const AdminAddEvent = ({ edit }) => {
 
   useEffect(() => {
     if (eventEditQuery.isSuccess && eventEditQuery.data) {
-      const { title, thumb, date, description, season_id } = eventEditQuery.data
+      const { status, title, thumb, date, description, season_id } = eventEditQuery.data
 
+      setStatus(status)
       setTitle(title)
       setThumbUrl(thumb)
       setDate(date)
@@ -86,19 +105,28 @@ const AdminAddEvent = ({ edit }) => {
 
   useEffect(() => {
     if (matchListQuery.isSuccess && matchListQuery.data) {
-      const matchList = matchListQuery.data.map(({ id, title, description, event_id }) => ({
-        id,
-        title,
-        description,
-        event_id
-      }))
+      const matchList = matchListQuery.data.map(({
+        id, title, description, event_id, wrestler_one_id, wrestler_two_id
+      }) => {
+        const wrestlers = wrestlerListQuery.data?.length ?
+          wrestlerListQuery.data
+            .filter((item) => [wrestler_one_id, wrestler_two_id].includes(item.value)) : []
+        return {
+          id,
+          title,
+          description,
+          event_id,
+          wrestlers
+        }
+      })
 
       setMatchList(matchList)
     }
-  }, [matchListQuery.status])
+  }, [matchListQuery.status, wrestlerListQuery.status])
 
   useEffect(() => {
     if (!edit) {
+      setStatus('')
       setTitle('')
       setThumbUrl('')
       setDate('')
@@ -127,6 +155,7 @@ const AdminAddEvent = ({ edit }) => {
     await api.post(`/event/${param}`, {
       parameter: {
         id: eventId,
+        status,
         title,
         description,
         date,
@@ -135,6 +164,7 @@ const AdminAddEvent = ({ edit }) => {
       }
     })
       .then(() => {
+        setStatus('')
         setTitle('')
         setThumbUrl('')
         setDate('')
@@ -178,12 +208,14 @@ const AdminAddEvent = ({ edit }) => {
         param = 'update'
       }
 
+      const [wrestler_one_id, wrestler_two_id] = item.wrestlers.map(({ value }) => value)
+
       await api.post(`/match/${param}`, {
         parameter: {
           ...item,
           event_id: eventId,
-          guesses: [],
-          wrestlers: [],
+          wrestler_one_id,
+          wrestler_two_id,
         }
       }).catch(err => {
         console.log(err)
@@ -242,6 +274,19 @@ const AdminAddEvent = ({ edit }) => {
       })
   }
 
+  function handleWrestleSelection(value, key, index) {
+    let newMatchList = [...matchList]
+    let { wrestlers } = newMatchList[index]
+
+    if (!Array.isArray(wrestlers)) wrestlers = []
+
+    const wrestlerObj = wrestlerListQuery.data.find((item) => item.value == value)
+    wrestlers[key] = wrestlerObj
+    newMatchList[index] = { ...newMatchList[index], wrestlers }
+
+    setMatchList(newMatchList)
+  }
+
   if (!!redirectTo) {
     return <Navigate to={redirectTo} />
   }
@@ -253,6 +298,18 @@ const AdminAddEvent = ({ edit }) => {
           <>
             <form onSubmit={handleSubmitEvent}>
               <div className="text-lg font-semibold mb-2">Dados do evento</div>
+              <Select
+                onChange={(e) => setStatus(e.target.value)}
+                value={status}
+                items={[
+                  {
+                    value: '',
+                    label: 'Selecione o status',
+                    disabled: true,
+                  },
+                  ...eventStatus
+                ]}
+                isError={showError} />
               <Input
                 required
                 type="text"
@@ -350,40 +407,61 @@ const AdminAddEvent = ({ edit }) => {
                             }}
                           >x</button>
                         </div>
-                        <div className="flex flex-nowrap items-center gap-4">
-                          {/* title
-                  description
-                  event_id
-                  guesses
-                  wrestlers */}
-                          <Input
-                            required
+                        <Input
+                          required
+                          fullWidth
+                          type="text"
+                          name={`match_title_` + index}
+                          onChange={(e) => {
+                            let newMatchList = [...matchList]
+                            newMatchList[index] = { ...newMatchList[index], title: e.target.value }
+                            setMatchList(newMatchList)
+                          }}
+                          value={item.title || ''}
+                          placeholder="Digite o título da luta"
+                          isError={showError}
+                        />
+                        <div className="flex flex-nowrap gap-4">
+                          <Select
                             fullWidth
-                            type="text"
-                            name={`match_title_` + index}
-                            onChange={(e) => {
-                              let newMatchList = [...matchList]
-                              newMatchList[index] = { ...newMatchList[index], title: e.target.value }
-                              setMatchList(newMatchList)
-                            }}
-                            value={item.title || ''}
-                            placeholder="Digite o título da luta"
-                            isError={showError}
-                          />
-                          <Input
+                            onChange={(e) => handleWrestleSelection(e.target.value, 0, index)}
+                            value={item.wrestlers?.length && item.wrestlers[0]?.value || ''}
+                            items={[
+                              {
+                                value: '',
+                                label: 'Selecione um(a) lutador(a)',
+                                disabled: true,
+                                selected: true
+                              },
+                            ].concat(wrestlerListQuery.data?.length ? wrestlerListQuery.data : [])}
+                            isError={showError} />
+                          <Select
                             fullWidth
-                            type="text"
-                            name={`match_description_` + index}
-                            onChange={(e) => {
-                              let newMatchList = [...matchList]
-                              newMatchList[index] = { ...newMatchList[index], description: e.target.value }
-                              setMatchList(newMatchList)
-                            }}
-                            value={item.description || ''}
-                            placeholder="Digite uma descrição para a luta"
-                            isError={showError}
-                          />
+                            onChange={(e) => handleWrestleSelection(e.target.value, 1, index)}
+                            value={item.wrestlers?.length && item.wrestlers[1]?.value || ''}
+                            items={[
+                              {
+                                value: '',
+                                label: 'Selecione outro(a) lutador(a)',
+                                disabled: true,
+                                selected: true
+                              },
+                            ].concat(wrestlerListQuery.data?.length ? wrestlerListQuery.data : [])}
+                            isError={showError} />
                         </div>
+                        <Input
+                          fullWidth
+                          type="text"
+                          name={`match_description_` + index}
+                          onChange={(e) => {
+                            let newMatchList = [...matchList]
+                            newMatchList[index] = { ...newMatchList[index], description: e.target.value }
+                            setMatchList(newMatchList)
+                          }}
+                          value={item.description || ''}
+                          placeholder="Digite uma descrição para a luta"
+                          isError={showError}
+                        />
                       </div>
                     )
                   })}

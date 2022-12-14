@@ -4,8 +4,10 @@ import moment from 'moment'
 const EventItem = ({ thumb, title, date, description, link = '#', className, ...rest }) => {
   return (
     <div className={`event-item flex rounded-2xl overflow-hidden bg-cardDark ${className}`}>
-      <Link to={link} className={`min-w-[160px] w-4/12 bg-cover bg-center`} style={{ backgroundImage: `url(${thumb})` }} />
-      <div className="w-8/12 p-5">
+      {thumb ? (
+        <Link to={link} className={`min-w-[160px] w-4/12 bg-cover bg-center`} style={{ backgroundImage: `url(${thumb})` }} />
+      ) : null}
+      <div className={`${thumb ? 'w-8/12' : 'w-full'} p-5`}>
         <div className="text-lg font-bold uppercase mb-2">
           <Link to={link}>
             {date && `(${moment(date).format('l')})`} {title}

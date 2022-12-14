@@ -24,6 +24,7 @@ import AdminUsers from './pages/Admin/Users';
 import AdminAccount from './pages/Admin/Account';
 import { queryClient } from './services/query'
 import AdminGuess from './pages/Admin/Guess';
+import AdminAddGuess from './pages/Admin/Guess/form';
 import Private from './components/Admin/ProtectedProvider';
 
 const App = () => {
@@ -168,6 +169,14 @@ const App = () => {
             element={
               <Private>
                 <AdminGuess />
+              </Private>
+            }
+          />
+          <Route
+            path="/admin/palpites/:id"
+            element={
+              <Private>
+                <AdminAddGuess />
               </Private>
             }
           />
