@@ -11,9 +11,6 @@ const Ranking = () => {
       <Card className="min-h-[260px] md:h-full flex-center mb-8">
         Ainda não há informações.
       </Card>
-      <Card className="min-h-[260px] md:h-full flex-center mb-8">
-        Ainda não há informações.
-      </Card>
     </Layout>
   )
 }

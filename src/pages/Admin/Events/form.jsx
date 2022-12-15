@@ -243,13 +243,15 @@ const AdminAddEvent = ({ edit }) => {
       toast.update(loadingToastId, {
         render: 'As lutas foram alteradas com sucesso!',
         type: 'success',
-        isLoading: false
+        isLoading: false,
+        autoClose: 4000,
       })
     } else {
       toast.update(loadingToastId, {
         render: 'Houve algum erro ao fazer sua solicitação',
         type: 'error',
-        isLoading: false
+        isLoading: false,
+        autoClose: 4000,
       })
     }
 

@@ -1,66 +1,133 @@
+import { useQuery } from 'react-query'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import api from '../../../services/api'
 import AdminLayout from '../../../components/Admin/Layout'
 import Card from '../../../components/Card'
 import Table from '../../../components/Table'
+import { currentUserEmailAtom } from '../../../store/atoms'
+import { useAtom } from 'jotai'
 
-const AdminEventos = () => {
+const AdminUsers = () => {
+  const [currentUserEmail] = useAtom(currentUserEmailAtom)
+
+  const userListQuery = useQuery('user', async () => {
+    return await api.get('/user/')
+      .then(({ data }) => data?.result)
+      .catch(e => {
+        console.log(e)
+        toast.error("Houve algum erro ao fazer sua solicitação");
+      })
+  }, {
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+  })
+
+  async function handleDelete(id) {
+    await api.delete(`/user/${id}`)
+      .then(() => {
+        toast.success("Usuário excluído com sucesso.")
+        userListQuery.refetch()
+      })
+      .catch(err => {
+        console.log(err)
+        return toast.error("Houve algum erro ao fazer sua solicitação");
+      })
+  }
+
+  async function handlePromote(id) {
+    await api.patch(`/user/promote/${id}`, {
+      parameter: {
+        isSuperuser: true
+      }
+    })
+      .then(() => {
+        toast.success("Usuário alterado com sucesso.")
+        userListQuery.refetch()
+      })
+      .catch(err => {
+        console.log(err)
+        return toast.error("Houve algum erro ao fazer sua solicitação");
+      })
+  }
+
   const columns = [
     {
-      title: 'Id',
+      title: '#',
       key: 'id',
       small: true,
     },
     {
-      title: 'Title',
-      key: 'title'
+      title: 'Email',
+      key: 'email'
     },
     {
-      title: 'Data',
-      key: 'date'
-    },
-    {
-      title: 'Link',
-      key: 'link',
+      title: 'Nível de acesso',
+      key: 'isSuperuser',
       small: true,
-    },
-  ]
-  const data = [
-    {
-      id: 1,
-      title: 'Texto 1',
-      date: '05/12/2022',
-      link: <Link to="/" className="text-blue-600 font-semibold">Abrir</Link>,
+      render: (isSuperuser) => isSuperuser ? 'Admin' : '-'
     },
     {
-      id: 2,
-      title: 'Texto 2',
-      date: '05/12/2022',
-      link: <Link to="/" className="text-blue-600 font-semibold">Abrir</Link>,
+      title: '',
+      key: 'edit',
+      small: true,
+      align: 'center',
+      render: (_, { id, email }) => {
+        if (currentUserEmail === email) {
+          return
+        }
+        return (
+          <Link
+            className="text-blue-600 font-semibold"
+            to="#"
+            onClick={(e) => {
+              e.preventDefault()
+              if (window.confirm('Tem certeza que deseja excluir este usuário?'))
+                handleDelete(id)
+            }}>
+            Excluir
+          </Link>
+        )
+      },
     },
     {
-      id: 3,
-      title: 'Texto 2',
-      date: '05/12/2022',
-      link: <Link to="/" className="text-blue-600 font-semibold">Abrir</Link>,
-    },
-    {
-      id: 4,
-      title: 'Texto 2',
-      date: '05/12/2022',
-      link: <Link to="/" className="text-blue-600 font-semibold">Abrir</Link>,
+      title: '',
+      key: 'set_super_user',
+      small: true,
+      align: 'center',
+      render: (_, { id, email, isSuperuser }) => {
+        if (currentUserEmail === email) {
+          return
+        }
+
+        return (
+          <Link
+            className="text-blue-600 font-semibold"
+            to="#"
+            onClick={(e) => {
+              e.preventDefault()
+              if (window.confirm('Tem certeza que deseja tornar este usuário um administrador?'))
+                handlePromote(id)
+            }}>
+            {isSuperuser ? 'Remover privilégios' : 'Promover a administrador'}
+          </Link>
+        )
+      },
     },
   ]
 
   return (
     <AdminLayout title="Gerenciar usuários">
       <Card>
-        <Table
-          columns={columns}
-          data={data}
-        />
+        {!userListQuery.isLoading ? (
+          <Table
+            columns={columns}
+            data={userListQuery.data}
+          />
+        ) : 'Carregando...'}
       </Card>
     </AdminLayout>
   )
 }
 
-export default AdminEventos
+export default AdminUsers

@@ -31,9 +31,9 @@ const Table = ({ columns, data, isLoading }) => {
         <div className="tbody">
           {displayedItems.map((row) => (
             <div className="tr flex flex-nowrap border-b border-zinc-700 last:border-b-0" key={row.id}>
-              {columns.map(({ key, small, render, renderKey }) => (
-                <div className={`td ${small ? 'w-1/2' : 'w-full'} p-4 py-3 text-sm`} key={key}>
-                  {render ? render(row[renderKey || key]) : row[renderKey || key]}
+              {columns.map(({ key, small, render, align }) => (
+                <div className={`td inline-flex items-center ${small ? 'w-1/2' : 'w-full'} text-${align ? align : 'left'} p-4 py-3 text-sm`} key={key}>
+                  {render ? render(row[key], row) : row[key]}
                 </div>
               ))}
             </div>

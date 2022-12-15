@@ -20,9 +20,9 @@ const Home = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col md:flex-row gap-6 mb-8">
+      <div className="flex flex-col md:flex-row gap-6 mt-10 mb-8">
         <div className="w-7/12 flex flex-col">
-          <SectionTitle>
+          <SectionTitle className="mt-0">
             Informações
           </SectionTitle>
           <DataInfoList />
@@ -34,19 +34,21 @@ const Home = () => {
           </Card>
         </div>
         <div className="w-5/12">
-          <SectionTitle link={{ label: "+ VER MAIS", href: "/eventos" }}>
-            Próximos eventos
-          </SectionTitle>
-          <EventList
-            items={eventQuery.data?.length ? eventQuery.data.slice(0, 3) : []}
-            direction="column"
-            isLoading={eventQuery.isLoading}
-          />
+          <Card className="h-full">
+            <SectionTitle className="mt-0" link={{ label: "+ VER MAIS", href: "/eventos" }}>
+              Próximos eventos
+            </SectionTitle>
+            <EventList
+              items={eventQuery.data?.length ? eventQuery.data.slice(0, 3) : []}
+              direction="column"
+              isLoading={eventQuery.isLoading}
+            />
+          </Card>
         </div>
       </div>
-      <Card className="min-h-[200px] md:min-h-[280px] flex-center">
+      {/* <Card className="min-h-[200px] md:min-h-[280px] flex-center">
         Não há eventos próximos de expirar.
-      </Card>
+      </Card> */}
     </Layout >
   )
 }

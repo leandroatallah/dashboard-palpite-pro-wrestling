@@ -1,3 +1,6 @@
+import { useAtom } from 'jotai'
+import { guessCountAtom } from '../../store/atoms'
+
 const DataInfoItem = ({ title, value, color }) => {
   return (
     <div className={`min-column-height flex flex-col rounded-2xl p-6 w-full justify-between ${color}`}>
@@ -8,11 +11,13 @@ const DataInfoItem = ({ title, value, color }) => {
 }
 
 const DataInfoList = () => {
+  const [guessCount] = useAtom(guessCountAtom)
+
   return (
-    <div className="flex flex-nowrap gap-4">
-      <DataInfoItem title="Ranking geral" value="12º" color="bg-amber-600" />
-      <DataInfoItem title="Pontos" value="128" color="bg-fuchsia-400" />
-      <DataInfoItem title="Palpites enviados" value="6" color="bg-green-600" />
+    <div className="flex flex-nowrap gap-4 mb-4">
+      {/* <DataInfoItem title="Ranking geral" value="-" color="bg-amber-600" /> */}
+      <DataInfoItem title="Pontos" value="0" color="bg-fuchsia-400" />
+      <DataInfoItem title="Palpites enviados" value={guessCount} color="bg-green-600" />
     </div>
   )
 }

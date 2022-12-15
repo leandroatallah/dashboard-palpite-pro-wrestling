@@ -41,8 +41,8 @@ const AdminEventos = () => {
       title: '',
       key: 'edit',
       small: true,
-      render: (id) => <Link className="text-blue-600 font-semibold" to={`/admin/eventos/${id}`}>Editar</Link>,
-      renderKey: 'id'
+      align: 'center',
+      render: (_, { id }) => <Link className="text-blue-600 font-semibold" to={`/admin/eventos/${id}`}>Editar</Link>,
     },
   ]
 

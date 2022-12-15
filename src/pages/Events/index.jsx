@@ -3,6 +3,7 @@ import Layout from '../../components/Layout'
 import SectionTitle from '../../components/SectionTitle'
 import EventList from '../../components/EventList'
 import api from '../../services/api'
+import Card from '../../components/Card'
 
 const Eventos = () => {
   const eventQuery = useQuery('event', async () => {
@@ -21,10 +22,16 @@ const Eventos = () => {
       <SectionTitle>
         Eventos
       </SectionTitle>
-      <EventList
-        items={eventQuery.data?.length ? eventQuery.data : null}
-        isLoading={eventQuery.isLoading}
-      />
+      {eventQuery.data?.length ? (
+        <EventList
+          items={eventQuery.data?.length ? eventQuery.data : null}
+          isLoading={eventQuery.isLoading}
+        />
+      ) : (
+        <Card className="min-h-[260px] md:h-full flex-center mb-8">
+          Ainda não eventos disponíves.
+        </Card>
+      )}
     </Layout>
   )
 }
