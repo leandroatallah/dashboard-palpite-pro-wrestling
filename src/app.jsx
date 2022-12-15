@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 
 import Home from './pages/Home'
-import Guesses from './pages/Guesses'
 import Events from './pages/Events'
 import EventDetail from './pages/Events/Detail'
 import Ranking from './pages/Ranking'
@@ -26,6 +25,7 @@ import { queryClient } from './services/query'
 import AdminGuess from './pages/Admin/Guess';
 import AdminAddGuess from './pages/Admin/Guess/form';
 import Private from './components/Admin/ProtectedProvider';
+import AdminReward from './pages/Admin/Reward';
 
 const App = () => {
   return (
@@ -37,14 +37,6 @@ const App = () => {
             element={
               <Private>
                 <Home />
-              </Private>
-            }
-          />
-          <Route
-            path="/palpites"
-            element={
-              <Private>
-                <Guesses />
               </Private>
             }
           />
@@ -173,10 +165,26 @@ const App = () => {
             }
           />
           <Route
-            path="/admin/palpites/:id"
+            path="/admin/palpites/novo"
             element={
               <Private>
                 <AdminAddGuess />
+              </Private>
+            }
+          />
+          <Route
+            path="/admin/recompensas"
+            element={
+              <Private>
+                <AdminReward />
+              </Private>
+            }
+          />
+          <Route
+            path="/admin/palpites/:id"
+            element={
+              <Private>
+                <AdminAddGuess edit />
               </Private>
             }
           />

@@ -13,6 +13,7 @@ const menuItems = [
   { label: 'Eventos', onlySuperUser: true, href: "/admin/eventos" },
   { label: 'Lutadores', onlySuperUser: true, href: "/admin/lutadores" },
   { label: 'Temporadas', onlySuperUser: true, href: "/admin/temporadas" },
+  { label: 'Recompensas', onlySuperUser: true, href: "/admin/recompensas" },
   { label: 'Palpites', href: "/admin/palpites" },
   { label: 'Usuários', onlySuperUser: true, href: "/admin/usuarios" },
   { label: 'Perfil', href: "/admin/perfil" },

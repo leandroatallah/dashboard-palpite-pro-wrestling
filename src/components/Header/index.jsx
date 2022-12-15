@@ -5,7 +5,6 @@ import logo from '../../assets/images/logo.svg'
 
 const menuItems = [
   { label: 'Início', href: "/" },
-  { label: 'Palpites', href: "/palpites" },
   { label: 'Eventos', href: "/eventos" },
   { label: 'Ranking', href: "/ranking" },
 ]
@@ -20,7 +19,7 @@ const Header = () => {
           <Link to="/">
             <img src={logo} alt="logo" />
           </Link>
-          <span className="text-zinc-400">Temporada 01/2022</span>
+          <span className="text-zinc-400">Temporada 01/2023</span>
         </div>
         <div>
           <nav>

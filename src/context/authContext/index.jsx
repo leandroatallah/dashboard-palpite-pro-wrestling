@@ -40,7 +40,11 @@ export const AuthProvider = ({ children }) => {
     return await api.post('/user/login', {
       username: email,
       password
-    }).then(async ({ data }) => {
+    }, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    },).then(async ({ data }) => {
       const { access_token } = data
 
       if (!access_token) {
@@ -61,8 +65,10 @@ export const AuthProvider = ({ children }) => {
 
   async function handleSignup(email, password) {
     return await api.post('/user/signup', {
-      email,
-      password
+      parameter: {
+        email,
+        password
+      }
     }).then(() => {
       toast.success("Usuário cadastrado com sucesso.", {
         pauseOnHover: false,

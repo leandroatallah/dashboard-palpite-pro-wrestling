@@ -28,7 +28,7 @@ const Conta = () => {
     setIsSubmitting(true)
     setShowError(false)
 
-    await api.patch('/user/edit-password/', { password })
+    await api.patch('/user/edit-password/', { parameter: { password } })
       .then(() => {
         setPassword('')
         setConfirmPassword('')

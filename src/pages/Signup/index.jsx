@@ -29,8 +29,6 @@ const Signup = () => {
     setShowError(!login)
     setIsSubmitting(false)
 
-    console.log(login)
-
     if (login) {
       setSuccessMessage(true)
     }

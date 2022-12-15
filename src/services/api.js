@@ -20,12 +20,8 @@ axios.defaults.headers = {
 
 axios.interceptors.request.use(
   async (config) => {
-    const isLoginRoute = config.url === '/user/login';
-    if (isLoginRoute) {
-      config.headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      };
-    }
+    const isSignRoute =
+      config.url === '/user/login' || config.url === '/user/signup';
     const token = localStorage.getItem('token');
 
     if (token) {
@@ -35,7 +31,7 @@ axios.interceptors.request.use(
         authorization: `Bearer ${JSON.parse(token)}`,
       };
     } else {
-      if (!isLoginRoute) {
+      if (!isSignRoute) {
         clearAllSession();
         return (window.location = '/login');
       }
