@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev -p": "vite --port=3000",
+    "dev --p": "vite --port=3000",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
