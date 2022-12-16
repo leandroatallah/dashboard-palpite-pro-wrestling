@@ -59,7 +59,15 @@ const AdminUsers = () => {
     },
     {
       title: 'Email',
-      key: 'email'
+      key: 'email',
+      render: (_, { email }) => (
+        <>
+          {email}
+          {currentUserEmail === email ? (
+            <span className="text-sm text-zinc-400 inline-block ml-1">(você)</span>
+          ) : ''}
+        </>
+      )
     },
     {
       title: 'Nível de acesso',

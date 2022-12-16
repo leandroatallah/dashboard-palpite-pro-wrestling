@@ -181,6 +181,8 @@ const AdminAddGuess = ({ edit }) => {
                       })
                     })
 
+                  const renderedResult = guessList.find((item) => item.match_id === matchId)
+
                   return (
                     <div className="" key={index}>
                       <div className="">Luta {index + 1}: {title}</div>
@@ -204,10 +206,9 @@ const AdminAddGuess = ({ edit }) => {
                             result,
                           }
 
-                          console.log(newGuessList)
                           setGuessList(newGuessList)
                         }}
-                        value={guessList.find((item) => item.match_id === matchId)?.winner_id || ''}
+                        value={renderedResult?.winner_id || renderedResult?.result}
                         items={[
                           {
                             value: '',

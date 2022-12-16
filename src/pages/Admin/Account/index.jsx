@@ -73,7 +73,7 @@ const Conta = () => {
               isError={showError}
             />
           </label>
-          <Button type="submit" loading={isSubmitting}>
+          <Button color="success" type="submit" loading={isSubmitting}>
             Atualizar
           </Button>
 

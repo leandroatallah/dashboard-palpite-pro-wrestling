@@ -47,7 +47,7 @@ const HeaderUser = () => {
       <IconButton src={bell} alt="notifications" />
       <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="w-[60px] h-[60px] overflow-hidden rounded-lg text-white uppercase font-bold text-2xl bg-green-600">
+        className="w-[60px] h-[60px] overflow-hidden rounded-lg text-white uppercase font-bold text-2xl bg-pink-500">
         {currentUserEmail?.slice(0, 2) || ''}
       </button>
       <div className={`bg-zinc-800 rounded-md py-3 px-4 absolute top-full right-0 min-w-[200px] ${isDropdownOpen ? 'block' : 'hidden'}`}>
