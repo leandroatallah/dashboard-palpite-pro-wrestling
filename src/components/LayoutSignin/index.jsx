@@ -14,7 +14,7 @@ const LayoutSignin = ({ children, callToAction }) => {
   return (
     <div className="flex-center flex-col h-screen">
       <Card className="max-w-[420px] w-full pb-10">
-        <div className="mb-8">
+        <div className="mb-6">
           <img className="mx-auto" src={logo} alt="logo" />
         </div>
 

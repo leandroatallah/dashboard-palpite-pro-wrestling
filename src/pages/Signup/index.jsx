@@ -45,6 +45,7 @@ const Signup = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
+          <div className="text-3xl font-bold text-white text-center mt-4 mb-6 pt-4 border-t border-zinc-800">Novo cadastro</div>
           <Input
             required
             type="email"

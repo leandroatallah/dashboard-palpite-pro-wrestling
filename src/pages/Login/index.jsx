@@ -34,6 +34,7 @@ const Login = () => {
       <><Link to="/signup" className="text-white font-semibold">Clique aqui</Link> para cadastrar</>
     }>
       <form onSubmit={handleSubmit}>
+        <div className="text-3xl font-bold text-white text-center mt-4 mb-6 pt-4 border-t border-zinc-800">Acesso ao painel</div>
         <Input
           required
           type="email"
