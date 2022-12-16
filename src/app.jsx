@@ -33,7 +33,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route
-            path="/"
+            path="/*"
             element={
               <Private>
                 <Home />
